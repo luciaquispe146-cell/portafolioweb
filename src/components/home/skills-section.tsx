@@ -34,6 +34,7 @@ const useStyles = makeStyles({
     },
     [MOBILE_QUERY]: {
       padding: "24px",
+      gap: "35px",
     },
   },
   left: {
@@ -43,6 +44,9 @@ const useStyles = makeStyles({
     maxWidth: "599px",
     [TABLET_QUERY]: {
       maxWidth: "100%",
+    },
+    [MOBILE_QUERY]: {
+      gap: "35px",
     },
   },
   intro: {
@@ -64,6 +68,10 @@ const useStyles = makeStyles({
     fontSize: "32px",
     lineHeight: "40px",
     margin: 0,
+    [MOBILE_QUERY]: {
+      fontSize: tokens.fontSizeBase600,
+      lineHeight: tokens.lineHeightBase600,
+    },
   },
   ctaBlock: {
     display: "flex",
@@ -79,6 +87,18 @@ const useStyles = makeStyles({
     color: customTokens.colorGrey12,
     margin: 0,
   },
+  // Outline button, brand-blue border — matches the Design System's Button
+  // (Style=Outline) with the project's brand color, same treatment already
+  // used for the mobile "Ver Proyecto" CTA on Project Cards.
+  ctaButton: {
+    display: "inline-flex",
+    [MOBILE_QUERY]: {
+      borderTopColor: tokens.colorBrandStroke1,
+      borderRightColor: tokens.colorBrandStroke1,
+      borderBottomColor: tokens.colorBrandStroke1,
+      borderLeftColor: tokens.colorBrandStroke1,
+    },
+  },
   right: {
     width: "434px",
     flexShrink: 0,
@@ -86,6 +106,12 @@ const useStyles = makeStyles({
       width: "100%",
       borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
       paddingTop: "48px",
+    },
+    [MOBILE_QUERY]: {
+      // The 35px gap between blocks (see `root`) replaces the divider as
+      // the visual separator on mobile.
+      borderTop: "none",
+      paddingTop: 0,
     },
   },
   accordionItem: {
@@ -102,6 +128,7 @@ const useStyles = makeStyles({
     paddingTop: "18px",
     paddingBottom: "18px",
     [MOBILE_QUERY]: {
+      fontSize: "20px",
       paddingTop: "12px",
       paddingBottom: "12px",
     },
@@ -110,6 +137,13 @@ const useStyles = makeStyles({
     display: "flex",
     gap: "28px",
     paddingBottom: "12px",
+    [MOBILE_QUERY]: {
+      flexDirection: "column",
+      // Match the list's own item gap so the two stacked lists read as one
+      // continuous column instead of leaving the row-layout column gap.
+      gap: "8px",
+      paddingBottom: "24px",
+    },
   },
   list: {
     display: "flex",
@@ -123,6 +157,9 @@ const useStyles = makeStyles({
     fontSize: tokens.fontSizeBase400,
     lineHeight: tokens.lineHeightBase400,
     color: customTokens.colorGrey12,
+    [MOBILE_QUERY]: {
+      width: "100%",
+    },
   },
 });
 
@@ -155,7 +192,14 @@ export function SkillsSection() {
         </div>
         <div className={styles.ctaBlock}>
           <p className={styles.ctaText}>¿Te interesa saber más sobre mí?</p>
-          <Button as="a" href="/cv.pdf" target="_blank" rel="noopener noreferrer" appearance="outline">
+          <Button
+            as="a"
+            href="/cv.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            appearance="outline"
+            className={styles.ctaButton}
+          >
             Dale un vistazo a mi CV
           </Button>
         </div>

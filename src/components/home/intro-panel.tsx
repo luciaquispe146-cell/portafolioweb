@@ -28,7 +28,8 @@ const useStyles = makeStyles({
     [MOBILE_QUERY]: {
       // The portfolio image (the only thing that needed a flush bottom
       // edge) is removed at this breakpoint, so padding is symmetric again.
-      paddingBottom: "56px",
+      paddingTop: "24px",
+      paddingBottom: "24px",
       paddingLeft: "24px",
       paddingRight: "24px",
     },
@@ -42,6 +43,9 @@ const useStyles = makeStyles({
       flexDirection: "column",
       alignItems: "stretch",
     },
+    [MOBILE_QUERY]: {
+      gap: "24px",
+    },
   },
   innerContent: {
     display: "flex",
@@ -51,8 +55,16 @@ const useStyles = makeStyles({
     [TABLET_QUERY]: {
       flexDirection: "column",
       alignItems: "flex-start",
-      gap: "16px",
       height: "auto",
+    },
+    // Bounded (not just max-width) so it can never overlap/race with
+    // MOBILE_QUERY's gap below — Griffel doesn't guarantee source order
+    // between separate media-query buckets when their ranges overlap.
+    "@media (min-width: 601px) and (max-width: 900px)": {
+      gap: "16px",
+    },
+    [MOBILE_QUERY]: {
+      gap: "24px",
     },
   },
   iconArea: {

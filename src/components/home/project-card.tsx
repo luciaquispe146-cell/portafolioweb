@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BadgePill } from "@/components/ui/badge-pill";
+import { Button } from "@/components/ui/button";
 import { customTokens } from "@/lib/fluent/theme";
 import { fontPrata } from "@/lib/fonts";
 import { projectHref } from "@/lib/projects";
@@ -16,7 +17,22 @@ import type { Project } from "@/types/project";
 const IMAGE_HOOK = "project-card-image";
 const OVERLAY_HOOK = "project-card-overlay";
 
+// Same breakpoint already used by ProjectsSection for its single-column
+// mobile grid — the card switches to its mobile composition at the same
+// width the layout itself goes single-column.
+const MOBILE_QUERY = "@media (max-width: 600px)";
+// Hover/focus-reveal effects (image zoom, circular arrow button) only make
+// sense where hover exists — scoping them here means there is nothing to
+// "turn off" on mobile, they simply never apply below the breakpoint.
+const DESKTOP_QUERY = "@media (min-width: 601px)";
+
 const useStyles = makeStyles({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "24px",
+    width: "100%",
+  },
   card: {
     position: "relative",
     display: "flex",
@@ -35,19 +51,21 @@ const useStyles = makeStyles({
     ':focus-visible': {
       outlineColor: tokens.colorStrokeFocus2,
     },
-    [`:hover .${IMAGE_HOOK}`]: {
-      transform: "scale(1.06)",
-    },
-    [`:focus-visible .${IMAGE_HOOK}`]: {
-      transform: "scale(1.06)",
-    },
-    [`:hover .${OVERLAY_HOOK}`]: {
-      opacity: 1,
-      transform: "translate(-50%, -50%) scale(1)",
-    },
-    [`:focus-visible .${OVERLAY_HOOK}`]: {
-      opacity: 1,
-      transform: "translate(-50%, -50%) scale(1)",
+    [DESKTOP_QUERY]: {
+      [`:hover .${IMAGE_HOOK}`]: {
+        transform: "scale(1.06)",
+      },
+      [`:focus-visible .${IMAGE_HOOK}`]: {
+        transform: "scale(1.06)",
+      },
+      [`:hover .${OVERLAY_HOOK}`]: {
+        opacity: 1,
+        transform: "translate(-50%, -50%) scale(1)",
+      },
+      [`:focus-visible .${OVERLAY_HOOK}`]: {
+        opacity: 1,
+        transform: "translate(-50%, -50%) scale(1)",
+      },
     },
     "@media (prefers-reduced-motion: reduce)": {
       [`& .${IMAGE_HOOK}, & .${OVERLAY_HOOK}`]: {
@@ -124,40 +142,62 @@ const useStyles = makeStyles({
     color: customTokens.colorPureBlack,
     textDecoration: "underline",
     paddingBottom: "4px",
+    [MOBILE_QUERY]: {
+      display: "none",
+    },
+  },
+  // Explicit CTA replacing the hover-driven affordance on mobile, where
+  // there's no hover state to rely on.
+  mobileViewProjectButton: {
+    display: "none",
+    [MOBILE_QUERY]: {
+      display: "flex",
+      width: "100%",
+      borderTopColor: tokens.colorBrandStroke1,
+      borderRightColor: tokens.colorBrandStroke1,
+      borderBottomColor: tokens.colorBrandStroke1,
+      borderLeftColor: tokens.colorBrandStroke1,
+    },
   },
 });
 
 export function ProjectCard({ project }: { project: Project }) {
   const styles = useStyles();
+  const href = projectHref(project.slug);
 
   return (
-    <Link href={projectHref(project.slug)} className={styles.card}>
-      <div className={styles.imageWrapper}>
-        <Image
-          src={project.coverImage}
-          alt={`Portada del proyecto ${project.title}`}
-          fill
-          sizes="(min-width: 1024px) 614px, 100vw"
-          className={mergeClasses(styles.image, IMAGE_HOOK)}
-        />
-        <span className={mergeClasses(styles.overlayButton, OVERLAY_HOOK)} aria-hidden="true">
-          <ArrowRight24Regular />
-        </span>
-      </div>
-      <div>
-        <h3 className={styles.title}>{project.title}</h3>
-        <div className={styles.metaRow}>
-          <div className={styles.tags}>
-            {project.tags.map((tag) => (
-              <BadgePill key={tag}>{tag}</BadgePill>
-            ))}
-          </div>
-          <span className={styles.viewProjectLink}>
-            Ver Proyecto
-            <ArrowUpRight16Regular />
+    <div className={styles.root}>
+      <Link href={href} className={styles.card}>
+        <div className={styles.imageWrapper}>
+          <Image
+            src={project.coverImage}
+            alt={`Portada del proyecto ${project.title}`}
+            fill
+            sizes="(min-width: 1024px) 614px, 100vw"
+            className={mergeClasses(styles.image, IMAGE_HOOK)}
+          />
+          <span className={mergeClasses(styles.overlayButton, OVERLAY_HOOK)} aria-hidden="true">
+            <ArrowRight24Regular />
           </span>
         </div>
-      </div>
-    </Link>
+        <div>
+          <h3 className={styles.title}>{project.title}</h3>
+          <div className={styles.metaRow}>
+            <div className={styles.tags}>
+              {project.tags.map((tag) => (
+                <BadgePill key={tag}>{tag}</BadgePill>
+              ))}
+            </div>
+            <span className={styles.viewProjectLink}>
+              Ver Proyecto
+              <ArrowUpRight16Regular />
+            </span>
+          </div>
+        </div>
+      </Link>
+      <Button as="a" href={href} appearance="outline" className={styles.mobileViewProjectButton}>
+        Ver Proyecto
+      </Button>
+    </div>
   );
 }

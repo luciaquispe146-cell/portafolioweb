@@ -20,6 +20,9 @@ const useStyles = makeStyles({
     lineHeight: "56px",
     color: customTokens.colorGrey12,
     margin: 0,
+    "@media (max-width: 600px)": {
+      fontSize: "32px",
+    },
   },
   grid: {
     display: "grid",

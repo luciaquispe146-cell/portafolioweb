@@ -6,6 +6,10 @@ import Image from "next/image";
 import { customTokens } from "@/lib/fluent/theme";
 import { fontPrata } from "@/lib/fonts";
 
+// Same breakpoint and mobile side-padding already used elsewhere
+// (IntroPanel, ProjectsSection, SkillsSection).
+const MOBILE_QUERY = "@media (max-width: 600px)";
+
 const useStyles = makeStyles({
   root: {
     display: "flex",
@@ -15,6 +19,10 @@ const useStyles = makeStyles({
     paddingLeft: "62px",
     paddingRight: "62px",
     color: customTokens.colorGrey12,
+    [MOBILE_QUERY]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
   },
   eyebrow: {
     fontFamily: tokens.fontFamilyBase,
@@ -44,6 +52,9 @@ const useStyles = makeStyles({
   },
   flourish: {
     flexShrink: 0,
+    [MOBILE_QUERY]: {
+      display: "none",
+    },
   },
   showcase: {
     fontFamily: tokens.fontFamilyBase,

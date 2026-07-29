@@ -184,7 +184,7 @@ export function SiteHeader() {
           </Button>
         </nav>
         <div className={styles.mobileActions}>
-          <Button as="a" href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" size="small">
+          <Button as="a" href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" size="large">
             Conversemos
           </Button>
           <FluentButton

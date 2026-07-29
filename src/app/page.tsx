@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PageContainer } from "@/components/layout/page-container";
 import { HomeContent } from "@/components/home/home-content";
+import { HomeSections } from "@/components/home/home-sections";
 
 export const metadata: Metadata = {
   title: { absolute: "Lucia Quispe — UX/UI Designer" },
@@ -21,12 +22,12 @@ export default function Home() {
       <SiteHeader />
       <HomeContent>
         <PageContainer>
-          <div style={{ display: "flex", flexDirection: "column", gap: "50px" }}>
+          <HomeSections>
             <HeroSection />
             <IntroPanel />
             <ProjectsSection />
             <SkillsSection />
-          </div>
+          </HomeSections>
         </PageContainer>
       </HomeContent>
       <SiteFooter />
