@@ -18,12 +18,14 @@ const brandOverrides = {
 export const customTokenDefinitions = {
   colorGrey12: "#1f1f1f", // Global.Color.Grey.12 — Home headings/body text
   colorGrey92: "#ebebeb", // Global.Color.Grey.92 — project card tag pills
+  colorGrey96: "#f5f5f5", // Global.Color.Grey.96 — project detail hero backdrop
   colorPureBlack: "#000000", // Global.Color.Black — availability/location badges
   colorAvailabilityDot: "#19d279", // status dot on "Disponible para trabajar"
   colorHairlineDivider: "rgba(0, 0, 0, 0.05)", // subtle 1px separators (e.g. header bottom border)
   colorFooterBackground: "#0f0f0f", // sampled from Figma footer screenshot
   colorFooterMuted: "rgba(255, 255, 255, 0.6)", // secondary text on the dark footer
   colorHeaderBackground: "rgba(255, 255, 255, 0.7)", // sticky header glass background
+  colorSparkle: "#34d889", // Global.Color.Seafoam.Tint20 — project detail meta-bar icon accent
 };
 
 export type CustomTokenName = keyof typeof customTokenDefinitions;
