@@ -26,11 +26,26 @@ const REPEATS_PER_HALF = 4;
 // identical no matter how many times the list is repeated internally.
 const SECONDS_PER_LAP = 18;
 
-const socialLinks = [
+const socialLinks: { label: string; href: string; target?: string; rel?: string }[] = [
   { label: "Email", href: "mailto:luciaquispe146@gmail.com" },
-  { label: "WhatsApp", href: "https://wa.me/34612296292" },
-  { label: "LinkedIn", href: "#" },
+  {
+    label: "WhatsApp",
+    href: "https://wa.me/34612296292",
+    target: "_blank",
+    rel: "noopener noreferrer",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/lucia-quispe-42a4b11a8/",
+    target: "_blank",
+    rel: "noopener noreferrer",
+  },
 ];
+
+// Same breakpoint used across the site. Desktop/Tablet are untouched —
+// every override here is scoped to MOBILE_QUERY only, per Figma's
+// "Footer Mobile" frame (node 13400:7292).
+const MOBILE_QUERY = "@media (max-width: 600px)";
 
 const useStyles = makeStyles({
   root: {
@@ -44,6 +59,13 @@ const useStyles = makeStyles({
     paddingBottom: "56px",
     paddingLeft: "62px",
     paddingRight: "62px",
+    [MOBILE_QUERY]: {
+      alignItems: "center",
+      paddingTop: "18px",
+      paddingBottom: "16px",
+      paddingLeft: "30px",
+      paddingRight: "30px",
+    },
   },
   eyebrow: {
     fontFamily: tokens.fontFamilyBase,
@@ -52,6 +74,10 @@ const useStyles = makeStyles({
     lineHeight: "20px",
     color: tokens.colorNeutralForegroundInverted,
     margin: 0,
+    [MOBILE_QUERY]: {
+      width: "100%",
+      textAlign: "center",
+    },
   },
   question: {
     fontFamily: tokens.fontFamilyBase,
@@ -60,6 +86,11 @@ const useStyles = makeStyles({
     lineHeight: "36px",
     color: tokens.colorNeutralForegroundInverted,
     margin: "12px 0 0",
+    [MOBILE_QUERY]: {
+      width: "100%",
+      textAlign: "center",
+      marginTop: "5px",
+    },
   },
   bigLink: {
     display: "inline-flex",
@@ -75,6 +106,23 @@ const useStyles = makeStyles({
     lineHeight: "1.17",
     color: tokens.colorNeutralForegroundInverted,
     textDecoration: "none",
+    [MOBILE_QUERY]: {
+      marginTop: "4px",
+      borderBottom: "none",
+    },
+  },
+  // Desktop underlines the link itself (width follows the text). Figma's
+  // Mobile frame instead shows a fixed 230px rule centered underneath —
+  // rendered as its own element rather than repurposing `bigLink`'s
+  // content-width border, hidden except at MOBILE_QUERY.
+  bigLinkDividerMobile: {
+    display: "none",
+    [MOBILE_QUERY]: {
+      display: "block",
+      width: "230px",
+      height: 0,
+      borderTop: `1px solid ${tokens.colorNeutralForegroundInverted}`,
+    },
   },
   bottomRow: {
     display: "flex",
@@ -83,6 +131,13 @@ const useStyles = makeStyles({
     marginTop: "64px",
     gap: "24px",
     flexWrap: "wrap",
+    [MOBILE_QUERY]: {
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      marginTop: "24px",
+      gap: "20px",
+    },
   },
   contactInfo: {
     display: "flex",
@@ -91,6 +146,11 @@ const useStyles = makeStyles({
     fontFamily: tokens.fontFamilyBase,
     fontSize: tokens.fontSizeBase300,
     lineHeight: tokens.lineHeightBase300,
+    [MOBILE_QUERY]: {
+      alignItems: "center",
+      textAlign: "center",
+      gap: "8px",
+    },
   },
   contactLink: {
     color: tokens.colorNeutralForegroundInverted,
@@ -107,10 +167,16 @@ const useStyles = makeStyles({
     flexDirection: "column",
     alignItems: "flex-end",
     gap: "8px",
+    [MOBILE_QUERY]: {
+      alignItems: "center",
+    },
   },
   socialNav: {
     display: "flex",
     gap: "20px",
+    [MOBILE_QUERY]: {
+      gap: "25px",
+    },
   },
   socialLink: {
     fontFamily: tokens.fontFamilyBase,
@@ -134,6 +200,22 @@ const useStyles = makeStyles({
     lineHeight: "16px",
     color: customTokens.colorFooterMuted,
     margin: 0,
+  },
+  // Figma's Mobile frame ends the padded content column with a full-width
+  // rule before the (full-bleed) marquee — desktop/tablet have no
+  // equivalent divider here, so this stays hidden outside MOBILE_QUERY.
+  dividerMobile: {
+    display: "none",
+    [MOBILE_QUERY]: {
+      display: "block",
+      width: "100%",
+      height: 0,
+      // Figma (Vector 850, node 13212:15922): stroke #242424 at 5% opacity —
+      // was approximated from a screenshot in the prior iteration; this is
+      // the exact value sampled from the design's own SVG export.
+      borderTop: "1px solid rgba(36, 36, 36, 0.05)",
+      marginTop: "32px",
+    },
   },
   tickerWrapper: {
     width: "100%",
@@ -193,6 +275,7 @@ export function SiteFooter() {
             Conversemos
             <ArrowUpRight24Regular />
           </a>
+          <div className={styles.bigLinkDividerMobile} aria-hidden="true" />
           <div className={styles.bottomRow}>
             <div className={styles.contactInfo}>
               <a className={styles.contactLink} href="mailto:luciaquispe146@gmail.com">
@@ -205,7 +288,13 @@ export function SiteFooter() {
             <div className={styles.meta}>
               <nav className={styles.socialNav} aria-label="Redes sociales">
                 {socialLinks.map((link) => (
-                  <a key={link.label} className={styles.socialLink} href={link.href}>
+                  <a
+                    key={link.label}
+                    className={styles.socialLink}
+                    href={link.href}
+                    target={link.target}
+                    rel={link.rel}
+                  >
                     {link.label}
                   </a>
                 ))}
@@ -213,6 +302,7 @@ export function SiteFooter() {
               <p className={styles.copyright}>© 2026 Lucia Quispe · Senior Design</p>
             </div>
           </div>
+          <div className={styles.dividerMobile} aria-hidden="true" />
         </div>
       </PageContainer>
       <div className={styles.tickerWrapper}>

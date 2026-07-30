@@ -1,6 +1,6 @@
 "use client";
 
-import { makeStyles, tokens } from "@fluentui/react-components";
+import { makeStyles, mergeClasses, tokens } from "@fluentui/react-components";
 import type { ReactNode } from "react";
 
 import { customTokens } from "@/lib/fluent/theme";
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function BadgePill({ children }: { children: ReactNode }) {
+export function BadgePill({ children, className }: { children: ReactNode; className?: string }) {
   const styles = useStyles();
-  return <span className={styles.root}>{children}</span>;
+  return <span className={mergeClasses(styles.root, className)}>{children}</span>;
 }

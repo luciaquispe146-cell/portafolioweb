@@ -1,8 +1,9 @@
 "use client";
 
 import { Button as FluentButton, makeStyles, mergeClasses, tokens } from "@fluentui/react-components";
-import { ArrowUpRight16Regular, Dismiss24Regular, Navigation24Regular } from "@fluentui/react-icons";
+import { Dismiss24Regular, Navigation24Regular } from "@fluentui/react-icons";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,37 @@ import { customTokens } from "@/lib/fluent/theme";
 const CV_HREF = "/CV%20-%20Lucia%20Quispe.pdf";
 const WHATSAPP_HREF =
   "https://wa.me/34612296052?text=Hola%2C%20vi%20tu%20portfolio%20y%20estoy%20interesada%20en%20trabajar%20contigo";
+
+// Stable, non-hashed hook so the "Ver CV" hover rule can reach the icon
+// directly instead of racing Fluent's own same-specificity
+// `.fui-Button__icon:hover` rule (whichever lands later in the generated
+// stylesheet wins, and that's not guaranteed to be ours).
+const CV_ICON_HOOK = "site-header-cv-icon";
+
+// Custom arrow-up-right glyph for "Ver CV" (provided directly, not a Fluent
+// icon) — stroke uses currentColor so it still picks up the Rest/Hover
+// navy colors applied via CV_ICON_HOOK.
+function CvIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        d="M5.25 12.75L12.75 5.25M12.75 12.75V5.25H5.25"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 // Same breakpoint already used elsewhere (IntroPanel, ProjectsSection) for
 // switching to the tablet/mobile layout.
@@ -138,6 +170,41 @@ const useStyles = makeStyles({
     width: "85%",
     borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
   },
+  // "Ver CV" (Figma nodes 9026:477 Rest / 9026:465 Hover): text is
+  // NeutralForeground1 (#242424) while its icon is brand navy at Rest —
+  // on Hover both text and icon unify to the darker navy
+  // (colorBrandBackgroundHover, #182c91). Used by both the Desktop Fluent
+  // Button and the Mobile menu's plain anchor; the icon is targeted via
+  // CV_ICON_HOOK on the icon element itself (not `.fui-Button__icon`),
+  // since that class is also targeted by Fluent's own same-specificity
+  // hover rule and cascade order between the two isn't guaranteed.
+  cvLink: {
+    color: tokens.colorNeutralForeground1,
+    transitionProperty: "color",
+    transitionDuration: tokens.durationNormal,
+    [`& .${CV_ICON_HOOK}`]: {
+      color: tokens.colorBrandStroke1,
+      transitionProperty: "color",
+      transitionDuration: tokens.durationNormal,
+    },
+    ":hover": {
+      color: tokens.colorBrandBackgroundHover,
+    },
+    [`:hover .${CV_ICON_HOOK}`]: {
+      color: tokens.colorBrandBackgroundHover,
+    },
+  },
+  // "Mis Proyectos" — same Hover treatment as "Ver CV" (Figma node
+  // 9026:465): text turns the darker navy (colorBrandBackgroundHover,
+  // #182c91) on hover. No icon here, so no icon-hook is needed. Rest color
+  // is left as whatever each usage already had (Button/menuLink default).
+  navHoverLink: {
+    transitionProperty: "color",
+    transitionDuration: tokens.durationNormal,
+    ":hover": {
+      color: tokens.colorBrandBackgroundHover,
+    },
+  },
 });
 
 export function SiteHeader() {
@@ -149,9 +216,9 @@ export function SiteHeader() {
   return (
     <header className={styles.root}>
       <div className={styles.inner}>
-        <a href="#top" aria-label="Ir al inicio">
+        <Link href="/" aria-label="Ir al inicio">
           <Image src="/images/brand/Logotipo.svg" alt="Lucia Quispe" width={100} height={53} priority />
-        </a>
+        </Link>
         <nav className={styles.nav} aria-label="Navegación principal">
           <div className={styles.navLinks}>
             <Button
@@ -159,6 +226,7 @@ export function SiteHeader() {
               href="#proyectos"
               appearance="transparent"
               size="large"
+              className={styles.navHoverLink}
               onClick={(event) => {
                 event.preventDefault();
                 smoothScrollToId("proyectos");
@@ -173,8 +241,9 @@ export function SiteHeader() {
               rel="noopener noreferrer"
               appearance="transparent"
               size="large"
-              icon={<ArrowUpRight16Regular />}
+              icon={<CvIcon className={CV_ICON_HOOK} />}
               iconPosition="after"
+              className={styles.cvLink}
             >
               Ver CV
             </Button>
@@ -205,7 +274,7 @@ export function SiteHeader() {
         className={mergeClasses(styles.menuPanel, isMobileMenuOpen && styles.menuPanelOpen)}
       >
         <a
-          className={styles.menuLink}
+          className={mergeClasses(styles.menuLink, styles.navHoverLink)}
           href="#proyectos"
           onClick={(event) => {
             event.preventDefault();
@@ -217,14 +286,14 @@ export function SiteHeader() {
         </a>
         <div className={styles.menuDivider} aria-hidden="true" />
         <a
-          className={styles.menuLink}
+          className={mergeClasses(styles.menuLink, styles.cvLink)}
           href={CV_HREF}
           target="_blank"
           rel="noopener noreferrer"
           onClick={closeMenu}
         >
           Ver CV
-          <ArrowUpRight16Regular />
+          <CvIcon className={CV_ICON_HOOK} />
         </a>
       </nav>
     </header>

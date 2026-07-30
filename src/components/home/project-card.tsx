@@ -25,6 +25,11 @@ const MOBILE_QUERY = "@media (max-width: 600px)";
 // sense where hover exists — scoping them here means there is nothing to
 // "turn off" on mobile, they simply never apply below the breakpoint.
 const DESKTOP_QUERY = "@media (min-width: 601px)";
+// Tablet (601-900px) must stay exactly as it is today — it currently
+// shares Desktop's base values with no distinction of its own. Anything
+// scoped to Desktop only (and not Tablet) has to use this bounded range
+// instead of DESKTOP_QUERY, which also matches Tablet.
+const DESKTOP_ONLY_QUERY = "@media (min-width: 901px)";
 
 const useStyles = makeStyles({
   root: {
@@ -32,6 +37,9 @@ const useStyles = makeStyles({
     flexDirection: "column",
     gap: "24px",
     width: "100%",
+    [MOBILE_QUERY]: {
+      gap: "14px",
+    },
   },
   card: {
     position: "relative",
@@ -39,6 +47,9 @@ const useStyles = makeStyles({
     flexDirection: "column",
     gap: "27px",
     width: "100%",
+    [MOBILE_QUERY]: {
+      gap: "14px",
+    },
     color: "inherit",
     textDecoration: "none",
     borderRadius: tokens.borderRadius3XLarge,
@@ -107,6 +118,22 @@ const useStyles = makeStyles({
     transitionTimingFunction: "ease",
     pointerEvents: "none",
   },
+  // Bare wrapper around title+divider+metaRow — block by default
+  // (unchanged for Tablet); a gapped flex column at Mobile (14px) and at
+  // true Desktop (18px, per the updated Figma spec).
+  content: {
+    display: "block",
+    [MOBILE_QUERY]: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "14px",
+    },
+    [DESKTOP_ONLY_QUERY]: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "18px",
+    },
+  },
   title: {
     fontFamily: fontPrata,
     fontWeight: "400",
@@ -114,6 +141,34 @@ const useStyles = makeStyles({
     lineHeight: "50px",
     color: customTokens.colorPureBlack,
     margin: 0,
+    [MOBILE_QUERY]: {
+      fontSize: "24px",
+      lineHeight: "32px",
+      height: "32px",
+    },
+    [DESKTOP_ONLY_QUERY]: {
+      height: "52px",
+    },
+  },
+  // Tablet: divider is metaRow's own border-top + paddingTop (unchanged).
+  // Mobile and true Desktop both use this standalone full-width element
+  // instead — Mobile so its 1px stroke doesn't eat into the padding-based
+  // gap, Desktop because Figma now places the divider between the title
+  // and the tags/link row rather than tying it to the link's own border.
+  divider: {
+    display: "none",
+    [MOBILE_QUERY]: {
+      display: "block",
+      width: "100%",
+      height: 0,
+      borderTop: "1px solid rgba(0, 0, 0, 0.1)",
+    },
+    [DESKTOP_ONLY_QUERY]: {
+      display: "block",
+      width: "100%",
+      height: 0,
+      borderTop: "1px solid rgba(0, 0, 0, 0.1)",
+    },
   },
   metaRow: {
     display: "flex",
@@ -123,12 +178,34 @@ const useStyles = makeStyles({
     width: "100%",
     paddingTop: "24px",
     borderTop: `1px solid ${tokens.colorNeutralStroke1}`,
+    [MOBILE_QUERY]: {
+      paddingTop: 0,
+      borderTop: "none",
+    },
+    // Tablet keeps the current border-top + paddingTop; Desktop's divider
+    // is now the standalone `.divider` element above instead, and the
+    // row goes back to tags+link side by side, vertically centered.
+    [DESKTOP_ONLY_QUERY]: {
+      alignItems: "center",
+      paddingTop: 0,
+      borderTop: "none",
+    },
   },
   tags: {
     display: "flex",
     flexWrap: "wrap",
     alignItems: "center",
     gap: "8px",
+    [MOBILE_QUERY]: {
+      gap: "6px",
+    },
+  },
+  tagPill: {
+    display: "inline-flex",
+    [MOBILE_QUERY]: {
+      paddingLeft: "12px",
+      paddingRight: "12px",
+    },
   },
   viewProjectLink: {
     display: "inline-flex",
@@ -144,6 +221,13 @@ const useStyles = makeStyles({
     paddingBottom: "4px",
     [MOBILE_QUERY]: {
       display: "none",
+    },
+    // Desktop: swap the text-decoration underline for a real border-bottom
+    // (a text-decoration's offset isn't reliably pixel-exact across
+    // fonts/browsers) — shrink-to-fit, right side of the row, same as Tablet.
+    [DESKTOP_ONLY_QUERY]: {
+      textDecoration: "none",
+      borderBottom: `1px solid ${customTokens.colorPureBlack}`,
     },
   },
   // Explicit CTA replacing the hover-driven affordance on mobile, where
@@ -180,12 +264,15 @@ export function ProjectCard({ project }: { project: Project }) {
             <ArrowRight24Regular />
           </span>
         </div>
-        <div>
+        <div className={styles.content}>
           <h3 className={styles.title}>{project.title}</h3>
+          <div className={styles.divider} aria-hidden="true" />
           <div className={styles.metaRow}>
             <div className={styles.tags}>
               {project.tags.map((tag) => (
-                <BadgePill key={tag}>{tag}</BadgePill>
+                <BadgePill key={tag} className={styles.tagPill}>
+                  {tag}
+                </BadgePill>
               ))}
             </div>
             <span className={styles.viewProjectLink}>

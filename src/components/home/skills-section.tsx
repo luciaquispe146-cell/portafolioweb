@@ -17,6 +17,10 @@ import { customTokens } from "@/lib/fluent/theme";
 // tablet breakpoint used elsewhere (900px in IntroPanel/SiteHeader).
 const TABLET_QUERY = "@media (max-width: 1000px)";
 const MOBILE_QUERY = "@media (max-width: 600px)";
+// Tablet/Mobile must stay exactly as they are — anything scoped to real
+// Desktop only (above this section's own 1000px tablet threshold) needs
+// this bounded query instead of relying on the absence of TABLET_QUERY.
+const DESKTOP_ONLY_QUERY = "@media (min-width: 1001px)";
 
 const useStyles = makeStyles({
   root: {
@@ -88,20 +92,49 @@ const useStyles = makeStyles({
     margin: 0,
   },
   // Outline button, brand-blue border — matches the Design System's Button
-  // (Style=Outline) with the project's brand color, same treatment already
-  // used for the mobile "Ver Proyecto" CTA on Project Cards.
+  // (Style=Outline, node 9026:585: NavyStrokeActive border) with the
+  // project's brand color, same treatment already used for the mobile
+  // "Ver Proyecto" CTA on Project Cards. Was previously only applied at
+  // Mobile — Desktop fell back to Fluent's default grey outline border,
+  // which didn't match the Figma component. Tablet is left as-is.
   ctaButton: {
     display: "inline-flex",
+    transitionProperty: "border-color",
+    transitionDuration: tokens.durationNormal,
     [MOBILE_QUERY]: {
       borderTopColor: tokens.colorBrandStroke1,
       borderRightColor: tokens.colorBrandStroke1,
       borderBottomColor: tokens.colorBrandStroke1,
       borderLeftColor: tokens.colorBrandStroke1,
     },
+    [DESKTOP_ONLY_QUERY]: {
+      borderTopColor: tokens.colorBrandStroke1,
+      borderRightColor: tokens.colorBrandStroke1,
+      borderBottomColor: tokens.colorBrandStroke1,
+      borderLeftColor: tokens.colorBrandStroke1,
+    },
+    // Hover (Figma node 9026:573, Style=Outline/State=Hover): border goes
+    // from NavyStrokeActive (#2a4dff) to the darker NavyForeground2
+    // (#182c91) — already in the theme as colorBrandBackgroundHover.
+    // Background and text color don't change between Rest/Hover in Figma.
+    // Applies everywhere the button renders (Desktop, Tablet, Mobile).
+    ':hover': {
+      borderTopColor: tokens.colorBrandBackgroundHover,
+      borderRightColor: tokens.colorBrandBackgroundHover,
+      borderBottomColor: tokens.colorBrandBackgroundHover,
+      borderLeftColor: tokens.colorBrandBackgroundHover,
+    },
   },
   right: {
     width: "434px",
     flexShrink: 0,
+    // `root` vertically centers its row children — fine while the
+    // accordion is tall (an item open), but with every item collapsed the
+    // block is short and visibly floats mid-row instead of top-aligning
+    // with `.left`. Pin it to the top at Desktop only.
+    [DESKTOP_ONLY_QUERY]: {
+      alignSelf: "flex-start",
+    },
     [TABLET_QUERY]: {
       width: "100%",
       borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
