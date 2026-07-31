@@ -227,7 +227,7 @@ export function SkillsSection() {
           <p className={styles.ctaText}>¿Te interesa saber más sobre mí?</p>
           <Button
             as="a"
-            href="/cv.pdf"
+            href="/CV%20-%20Lucia%20Quispe.pdf"
             target="_blank"
             rel="noopener noreferrer"
             appearance="outline"

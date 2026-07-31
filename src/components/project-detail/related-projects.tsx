@@ -8,10 +8,11 @@ import type { Project } from "@/types/project";
 
 // Same breakpoints used across the site.
 const MOBILE_QUERY = "@media (max-width: 600px)";
-// Exclusive tablet-only range: the grid's gap gets a DIFFERENT value at
-// MOBILE_QUERY, and Griffel doesn't guarantee which of two overlapping
-// max-width buckets wins the cascade — bounding this avoids that race.
-const TABLET_ONLY_QUERY = "@media (min-width: 601px) and (max-width: 900px)";
+// Exclusive tablet-only range: the grid's gap (and root/inner gaps below)
+// get a DIFFERENT value at MOBILE_QUERY, and Griffel doesn't guarantee which
+// of two overlapping max-width buckets wins the cascade — bounding this
+// avoids that race.
+const TABLET_ONLY_QUERY = "@media (min-width: 601px) and (max-width: 1000px)";
 
 const useStyles = makeStyles({
   root: {
@@ -19,6 +20,9 @@ const useStyles = makeStyles({
     flexDirection: "column",
     gap: "58px",
     width: "100%",
+    [TABLET_ONLY_QUERY]: {
+      gap: "45px",
+    },
     [MOBILE_QUERY]: {
       gap: "40px",
     },
@@ -33,6 +37,9 @@ const useStyles = makeStyles({
     alignItems: "center",
     gap: "58px",
     width: "100%",
+    [TABLET_ONLY_QUERY]: {
+      gap: "28px",
+    },
     [MOBILE_QUERY]: {
       gap: "30px",
     },
@@ -55,7 +62,7 @@ const useStyles = makeStyles({
     gap: "47px",
     width: "100%",
     [TABLET_ONLY_QUERY]: {
-      gap: "24px",
+      gap: "18px",
     },
     [MOBILE_QUERY]: {
       gridTemplateColumns: "1fr",
@@ -80,7 +87,7 @@ export function RelatedProjects({ projects }: { projects: Project[] }) {
         <h2 className={styles.heading}>Más proyectos que te pueden interesar</h2>
         <div className={styles.grid}>
           {related.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
+            <ProjectCard key={project.slug} project={project} mobileFromTablet />
           ))}
         </div>
       </div>

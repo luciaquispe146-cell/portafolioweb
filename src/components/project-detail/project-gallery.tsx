@@ -17,7 +17,7 @@ const MOBILE_QUERY = "@media (max-width: 600px)";
 // (not just an inherited one), and Griffel doesn't guarantee which of two
 // overlapping max-width buckets wins the cascade — bounding this avoids the
 // race entirely instead of relying on stylesheet insertion order.
-const TABLET_ONLY_QUERY = "@media (min-width: 601px) and (max-width: 900px)";
+const TABLET_ONLY_QUERY = "@media (min-width: 601px) and (max-width: 1000px)";
 
 const useStyles = makeStyles({
   root: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
     gap: "22px",
     width: "100%",
     [TABLET_ONLY_QUERY]: {
-      gap: "16px",
+      gap: "18px",
     },
     [MOBILE_QUERY]: {
       gap: "14px",
@@ -37,7 +37,7 @@ const useStyles = makeStyles({
     gap: "22px",
     width: "100%",
     [TABLET_ONLY_QUERY]: {
-      gap: "16px",
+      gap: "18px",
     },
     [MOBILE_QUERY]: {
       gap: "14px",

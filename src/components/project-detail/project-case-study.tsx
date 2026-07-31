@@ -6,13 +6,16 @@ import { LabeledBullet } from "@/components/project-detail/labeled-bullet";
 import { customTokens } from "@/lib/fluent/theme";
 import type { ProjectDetail } from "@/types/project";
 
-// Same breakpoints used across the site. No Tablet frame exists in Figma
-// for this page — Tablet reuses the Mobile stacked composition starting at
-// TABLET_QUERY (interpolated, per explicit sign-off), while typography and
-// the "LA SOLUCIÓN" label swap only kick in at the Figma-confirmed
-// MOBILE_QUERY breakpoint.
-const TABLET_QUERY = "@media (max-width: 900px)";
+// Same breakpoints used across the site. Tablet and Mobile both stack the
+// heading above the challenge/proposal content (vs. Desktop's side-by-side
+// row) — that part of the composition is shared at TABLET_QUERY. Typography
+// and the "LA SOLUCIÓN" label swap only kick in at MOBILE_QUERY.
+const TABLET_QUERY = "@media (max-width: 1000px)";
 const MOBILE_QUERY = "@media (max-width: 600px)";
+// Exclusive tablet-only range: root's gap differs from Mobile's (Figma
+// 464444:2794 vs 13400:7354) even though both share the TABLET_QUERY column
+// layout above — bounded so it can't race MOBILE_QUERY in the cascade.
+const TABLET_ONLY_QUERY = "@media (min-width: 601px) and (max-width: 1000px)";
 
 const useStyles = makeStyles({
   root: {
@@ -20,6 +23,9 @@ const useStyles = makeStyles({
     flexDirection: "column",
     gap: "60px",
     width: "100%",
+    [TABLET_ONLY_QUERY]: {
+      gap: "24px",
+    },
     [MOBILE_QUERY]: {
       gap: "32px",
     },
@@ -31,9 +37,12 @@ const useStyles = makeStyles({
     width: "100%",
     [TABLET_QUERY]: {
       flexDirection: "column",
-      gap: "24px",
+      gap: "32px",
     },
   },
+  // width:270px used to force a wrap the Figma reference doesn't have —
+  // auto + nowrap lets the heading take exactly the width its single line
+  // needs, at every breakpoint (Mobile already used width:auto below).
   heading: {
     fontFamily: tokens.fontFamilyBase,
     fontWeight: "300",
@@ -41,7 +50,8 @@ const useStyles = makeStyles({
     lineHeight: "56px",
     color: customTokens.colorGrey12,
     flexShrink: 0,
-    width: "270px",
+    width: "auto",
+    whiteSpace: "nowrap",
     [MOBILE_QUERY]: {
       fontSize: "32px",
       lineHeight: "40px",

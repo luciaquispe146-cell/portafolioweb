@@ -5,7 +5,7 @@ import { makeStyles, tokens } from "@fluentui/react-components";
 import { LabeledBullet } from "@/components/project-detail/labeled-bullet";
 import { customTokens } from "@/lib/fluent/theme";
 
-const TABLET_QUERY = "@media (max-width: 900px)";
+const TABLET_QUERY = "@media (max-width: 1000px)";
 const MOBILE_QUERY = "@media (max-width: 600px)";
 
 const useStyles = makeStyles({

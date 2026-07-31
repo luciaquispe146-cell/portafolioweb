@@ -8,15 +8,14 @@ import { ProjectResult } from "@/components/project-detail/project-result";
 import { RelatedProjects } from "@/components/project-detail/related-projects";
 import type { Project } from "@/types/project";
 
-// Same breakpoints used across the site. No Tablet frame exists in Figma
-// for this page — the 100px Desktop section gap is interpolated down
-// toward the Figma-confirmed 32px Mobile gap at TABLET_ONLY_QUERY.
-// TABLET_ONLY_QUERY is bounded (not just max-width) so it can never overlap
-// with MOBILE_QUERY below — Griffel doesn't guarantee source order between
-// separate media-query buckets when their ranges overlap, so an unbounded
-// tablet max-width here could win the cascade at mobile widths too.
+// Same breakpoints used across the site (Figma 464444:2260 for Tablet,
+// 13400:7295 for Mobile). TABLET_ONLY_QUERY is bounded (not just max-width)
+// so it can never overlap with MOBILE_QUERY below — Griffel doesn't
+// guarantee source order between separate media-query buckets when their
+// ranges overlap, so an unbounded tablet max-width here could win the
+// cascade at mobile widths too.
 const MOBILE_QUERY = "@media (max-width: 600px)";
-const TABLET_ONLY_QUERY = "@media (min-width: 601px) and (max-width: 900px)";
+const TABLET_ONLY_QUERY = "@media (min-width: 601px) and (max-width: 1000px)";
 
 const useStyles = makeStyles({
   root: {
@@ -27,14 +26,14 @@ const useStyles = makeStyles({
     paddingTop: "100px",
     paddingBottom: "120px",
     [TABLET_ONLY_QUERY]: {
-      gap: "60px",
-      paddingTop: "60px",
-      paddingBottom: "80px",
+      gap: "42px",
+      paddingTop: "42px",
+      paddingBottom: "42px",
     },
     [MOBILE_QUERY]: {
       gap: "32px",
       paddingTop: "32px",
-      paddingBottom: "56px",
+      paddingBottom: "48px",
     },
   },
 });
