@@ -23,8 +23,11 @@ export type ProjectDetail = {
   };
   externalUrl: string;
   bannerImage: string;
-  // Exactly 7 images, in the order the gallery grid expects them.
-  gallery: [string, string, string, string, string, string, string];
+  // Up to 7 images, in the order the gallery grid expects them (positions
+  // 0-1 a side-by-side pair, 2 full-width, 3-4 and 5-6 asymmetric pairs).
+  // 5 or 7 images are the two lengths confirmed in Figma so far — 5 renders
+  // the first 3 rows only, 7 renders all 4.
+  gallery: string[];
   challenge: string;
   proposal: string;
   result: string;

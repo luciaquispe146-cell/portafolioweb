@@ -94,11 +94,15 @@ function GalleryImage({ src, ratio, alt }: { src: string; ratio: string; alt: st
   );
 }
 
+// Rows 3 and 4 (indices 3-4 and 5-6) render only when that many images are
+// provided — Figma defines both a 7-image gallery (Pamer) and a 5-image one
+// (Atria, which simply omits the last pair) as legitimate, distinct content
+// lengths for this same template, not a missing-asset situation.
 export function ProjectGallery({
   gallery,
   projectTitle,
 }: {
-  gallery: [string, string, string, string, string, string, string];
+  gallery: string[];
   projectTitle: string;
 }) {
   const styles = useStyles();
@@ -116,14 +120,18 @@ export function ProjectGallery({
       <div className={mergeClasses(styles.row, styles.rowFull)}>
         <GalleryImage src={gallery[2]} ratio={GALLERY_RATIOS[2]} alt={altFor(2)} />
       </div>
-      <div className={mergeClasses(styles.row, styles.rowWide)}>
-        <GalleryImage src={gallery[3]} ratio={GALLERY_RATIOS[3]} alt={altFor(3)} />
-        <GalleryImage src={gallery[4]} ratio={GALLERY_RATIOS[4]} alt={altFor(4)} />
-      </div>
-      <div className={mergeClasses(styles.row, styles.rowNarrow)}>
-        <GalleryImage src={gallery[5]} ratio={GALLERY_RATIOS[5]} alt={altFor(5)} />
-        <GalleryImage src={gallery[6]} ratio={GALLERY_RATIOS[6]} alt={altFor(6)} />
-      </div>
+      {gallery.length > 4 && (
+        <div className={mergeClasses(styles.row, styles.rowWide)}>
+          <GalleryImage src={gallery[3]} ratio={GALLERY_RATIOS[3]} alt={altFor(3)} />
+          <GalleryImage src={gallery[4]} ratio={GALLERY_RATIOS[4]} alt={altFor(4)} />
+        </div>
+      )}
+      {gallery.length > 6 && (
+        <div className={mergeClasses(styles.row, styles.rowNarrow)}>
+          <GalleryImage src={gallery[5]} ratio={GALLERY_RATIOS[5]} alt={altFor(5)} />
+          <GalleryImage src={gallery[6]} ratio={GALLERY_RATIOS[6]} alt={altFor(6)} />
+        </div>
+      )}
     </div>
   );
 }
