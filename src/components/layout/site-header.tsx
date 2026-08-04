@@ -4,7 +4,8 @@ import { Button as FluentButton, makeStyles, mergeClasses, tokens } from "@fluen
 import { Dismiss24Regular, Navigation24Regular } from "@fluentui/react-icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { customTokens } from "@/lib/fluent/theme";
@@ -210,8 +211,30 @@ const useStyles = makeStyles({
 export function SiteHeader() {
   const styles = useStyles();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const closeMenu = () => setIsMobileMenuOpen(false);
+
+  // "Mis Proyectos" from any project detail page: navigate home first, then
+  // pick up the scroll once the projects section actually exists there.
+  const projectsHref = pathname === "/" ? "#proyectos" : "/#proyectos";
+  function goToProjects() {
+    if (pathname === "/") {
+      smoothScrollToId("proyectos");
+    } else {
+      router.push("/#proyectos");
+    }
+  }
+
+  // Runs on mount after a cross-page "Mis Proyectos" navigation lands on
+  // Home with the #proyectos hash still in the URL — finishes the job with
+  // the same smooth scroll used when already on Home.
+  useEffect(() => {
+    if (pathname === "/" && window.location.hash === "#proyectos") {
+      requestAnimationFrame(() => smoothScrollToId("proyectos"));
+    }
+  }, [pathname]);
 
   return (
     <header className={styles.root}>
@@ -223,13 +246,13 @@ export function SiteHeader() {
           <div className={styles.navLinks}>
             <Button
               as="a"
-              href="#proyectos"
+              href={projectsHref}
               appearance="transparent"
               size="large"
               className={styles.navHoverLink}
               onClick={(event) => {
                 event.preventDefault();
-                smoothScrollToId("proyectos");
+                goToProjects();
               }}
             >
               Mis Proyectos
@@ -275,10 +298,10 @@ export function SiteHeader() {
       >
         <a
           className={mergeClasses(styles.menuLink, styles.navHoverLink)}
-          href="#proyectos"
+          href={projectsHref}
           onClick={(event) => {
             event.preventDefault();
-            smoothScrollToId("proyectos");
+            goToProjects();
             closeMenu();
           }}
         >

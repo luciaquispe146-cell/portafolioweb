@@ -53,7 +53,9 @@ const useStyles = makeStyles({
     textAlign: "center",
     [MOBILE_QUERY]: {
       fontSize: "32px",
-      lineHeight: "40px",
+      // ~112.5% of the font size (was 125%, which read as too loose between
+      // the two wrapped lines) — font size/weight/alignment untouched.
+      lineHeight: "36px",
     },
   },
   grid: {

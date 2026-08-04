@@ -1,11 +1,26 @@
 "use client";
 
 import { makeStyles, tokens } from "@fluentui/react-components";
-import { ArrowUpRight24Regular } from "@fluentui/react-icons";
 import Image from "next/image";
 
 import { PageContainer } from "@/components/layout/page-container";
 import { customTokens } from "@/lib/fluent/theme";
+
+// Rendered at 50x50 (explicit px attributes, not font-size-driven) —
+// currentColor keeps it tied to the link's own color.
+function ConversemosIcon() {
+  return (
+    <svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M17.5 42.5L42.5 17.5M42.5 42.5V17.5H17.5"
+        stroke="currentColor"
+        strokeWidth="4.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 const tickerItems = [
   "Research & Synthesis",
@@ -273,7 +288,7 @@ export function SiteFooter() {
           <p className={styles.question}>¿Tienes un proyecto en mente?</p>
           <a className={styles.bigLink} href="mailto:luciaquispe146@gmail.com">
             Conversemos
-            <ArrowUpRight24Regular />
+            <ConversemosIcon />
           </a>
           <div className={styles.bigLinkDividerMobile} aria-hidden="true" />
           <div className={styles.bottomRow}>

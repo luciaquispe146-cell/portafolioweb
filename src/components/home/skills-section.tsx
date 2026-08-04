@@ -36,6 +36,14 @@ const useStyles = makeStyles({
       flexDirection: "column",
       alignItems: "stretch",
     },
+    // The 75px base gap is meant for the Desktop row layout (space between
+    // `.left` and `.right` side by side); once stacked into a column at
+    // Tablet it read as excess vertical space above the accordion. Bounded
+    // (not plain TABLET_QUERY) so it can't race with MOBILE_QUERY's own gap
+    // below over the same property.
+    "@media (min-width: 601px) and (max-width: 1000px)": {
+      gap: "40px",
+    },
     [MOBILE_QUERY]: {
       padding: "24px",
       gap: "35px",
@@ -48,6 +56,11 @@ const useStyles = makeStyles({
     maxWidth: "599px",
     [TABLET_QUERY]: {
       maxWidth: "100%",
+    },
+    // Roughly half the Desktop gap between the intro text and the CTA
+    // block — bounded so it can't race with MOBILE_QUERY's own gap below.
+    "@media (min-width: 601px) and (max-width: 1000px)": {
+      gap: "53px",
     },
     [MOBILE_QUERY]: {
       gap: "35px",
@@ -72,6 +85,13 @@ const useStyles = makeStyles({
     fontSize: "32px",
     lineHeight: "40px",
     margin: 0,
+    // Bounded (not a plain max-width:1100px) so it can never overlap/race
+    // with MOBILE_QUERY below over the same fontSize property — Griffel
+    // doesn't guarantee source order between overlapping media-query
+    // buckets. Only fontSize changes here; weight/lineHeight/color stay put.
+    "@media (min-width: 601px) and (max-width: 1100px)": {
+      fontSize: "26px",
+    },
     [MOBILE_QUERY]: {
       fontSize: tokens.fontSizeBase600,
       lineHeight: tokens.lineHeightBase600,
@@ -136,14 +156,16 @@ const useStyles = makeStyles({
       alignSelf: "flex-start",
     },
     [TABLET_QUERY]: {
+      // Divider removed at this breakpoint down. paddingTop still provides
+      // the space between the CTA block and the accordion (now combined
+      // with `root`'s own reduced gap above) — trimmed from 48px since,
+      // together with that gap, it read as excess empty space.
       width: "100%",
-      borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
-      paddingTop: "48px",
+      paddingTop: "24px",
     },
     [MOBILE_QUERY]: {
-      // The 35px gap between blocks (see `root`) replaces the divider as
-      // the visual separator on mobile.
-      borderTop: "none",
+      // The 35px gap between blocks (see `root`) already replaces the
+      // divider as the visual separator on mobile.
       paddingTop: 0,
     },
   },
@@ -170,6 +192,16 @@ const useStyles = makeStyles({
     display: "flex",
     gap: "28px",
     paddingBottom: "12px",
+    // At Tablet the bottom gap (this paddingBottom) reads noticeably
+    // tighter than the top gap (the header's own paddingBottom, 18px,
+    // since this element has no paddingTop of its own) — bumped to match
+    // so the accordion content sits visually centered between header and
+    // divider. Bounded to 601-1000px only: Desktop keeps its current 12px,
+    // and this can't race with MOBILE_QUERY's own paddingBottom below since
+    // the ranges never overlap.
+    "@media (min-width: 601px) and (max-width: 1000px)": {
+      paddingBottom: "18px",
+    },
     [MOBILE_QUERY]: {
       flexDirection: "column",
       // Match the list's own item gap so the two stacked lists read as one

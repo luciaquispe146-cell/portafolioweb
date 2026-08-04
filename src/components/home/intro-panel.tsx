@@ -25,11 +25,20 @@ const useStyles = makeStyles({
     paddingBottom: 0,
     paddingLeft: "62px",
     paddingRight: "62px",
+    // Hiding the portfolio image + its divider (see horizontalDivider /
+    // portfolioImageWrapper below) also removed the bottom spacing they
+    // used to provide. Restore it as bottom padding instead, bounded to
+    // 601-1000px so it can't race with MOBILE_QUERY's own paddingBottom
+    // below over the same property.
+    "@media (min-width: 601px) and (max-width: 1000px)": {
+      paddingBottom: "50px",
+    },
     [MOBILE_QUERY]: {
       // The portfolio image (the only thing that needed a flush bottom
-      // edge) is removed at this breakpoint, so padding is symmetric again.
+      // edge) is removed at this breakpoint, so top/left/right padding is
+      // symmetric again; bottom restores the 50px lost with the divider.
       paddingTop: "24px",
-      paddingBottom: "24px",
+      paddingBottom: "50px",
       paddingLeft: "24px",
       paddingRight: "24px",
     },
@@ -117,7 +126,10 @@ const useStyles = makeStyles({
   horizontalDivider: {
     width: "100%",
     borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
-    [MOBILE_QUERY]: {
+    // Separated the portfolio image from the content above it — hidden
+    // alongside that image from the same 1000px breakpoint down, since it
+    // no longer has anything to separate below it.
+    "@media (max-width: 1000px)": {
       display: "none",
     },
   },
@@ -125,7 +137,10 @@ const useStyles = makeStyles({
     position: "relative",
     width: "100%",
     height: "107px",
-    [MOBILE_QUERY]: {
+    // Was clipping instead of reflowing below Desktop widths — hidden
+    // entirely from the Tablet breakpoint down (600px, already inside this
+    // range, no longer needs its own separate query).
+    "@media (max-width: 1000px)": {
       display: "none",
     },
   },
